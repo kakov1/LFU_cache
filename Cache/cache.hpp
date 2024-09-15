@@ -7,7 +7,6 @@ class cache_t {
 
         const size_t cache_size;
         const size_t pages_amount;
-        int least_used_page;
 
     public:
 
@@ -33,8 +32,6 @@ class cache_t {
         std::list<frequency_node> frequency_list;
 
         std::unordered_map<KeyT, cache_node_it> cache_hash_table;
-
-        std::vector<PageT> pages;
 
         cache_t(const size_t size, const size_t amount) : cache_size(size), pages_amount(amount)  {}
 
@@ -101,7 +98,7 @@ class cache_t {
             return false;
         } 
 
-        int replace_cache_node(cache_node_it hit) {
+        int move_cache_node(cache_node_it hit) {
             size_t new_frequency = hit->freq_node->frequency + 1;
             freq_node_it prev_freq_node = hit->freq_node;
             freq_node_it next_freq_node = std::next(prev_freq_node, 1);
@@ -138,28 +135,20 @@ class cache_t {
                 return false;
             }  
 
-            replace_cache_node(hit->second);
+            move_cache_node(hit->second);
 
             hits++;
 
             return true;
         }
 
-        int read_input_pages() {
-            int buf;
-
-            for (int i = 0; i < pages_amount; i++) {
-                std::cin >> buf;
-                pages.push_back(buf);
-            }
-
-            return 0;
-        }
-
         int processing_cache() {
-            for (PageT page : pages) {
-                lookup_update(page, page);
-            }   
+            PageT buf;
+
+            for (int page_num = 0; page_num < pages_amount; page_num++) {
+                std::cin >> buf;
+                lookup_update(buf, buf);
+            }
 
             return 0;
         }

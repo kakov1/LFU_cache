@@ -2,7 +2,7 @@
 #include <unordered_map>
 #include <list>
 #include <vector>
-#include "cache.hpp"
+#include "ideal_cache.hpp"
 
 
 int main() {
@@ -10,7 +10,9 @@ int main() {
 
     std::cin >> cache_size >> pages_amount;
 
-    cache_t<size_t, size_t> cache(cache_size, pages_amount);
+    ideal_cache_t<size_t, size_t> cache(cache_size, pages_amount);
+
+    cache.read_input_pages();
 
     cache.processing_cache();
 
