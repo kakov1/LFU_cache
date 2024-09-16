@@ -4,12 +4,9 @@
 template <typename PageT, typename KeyT = int>
 class ideal_cache_t {
     private:
-
         const size_t cache_size;
         const size_t pages_amount;
-
     public:
-
         struct cache_node {
             PageT page;
             KeyT key;
@@ -20,17 +17,14 @@ class ideal_cache_t {
         size_t hits = 0;
 
         std::unordered_map<KeyT, cache_node_it> cache_hash_table;
-
         std::unordered_map<KeyT, std::list<size_t>> pages_hash_table;
 
         std::list<cache_node> cache_list;
-
         std::vector<KeyT> pages_list;
 
         ideal_cache_t(const size_t size, const size_t amount) : cache_size(size), pages_amount(amount)  {}
 
         int add_cache(PageT page, KeyT key) {
-
             cache_list.push_front({page, key});
 
             if (pages_hash_table[key].size() != 0) {
@@ -50,11 +44,9 @@ class ideal_cache_t {
         }
         
         int delete_latest() {
-
             cache_node_it latest_page_it = cache_list.begin();
 
-            for (cache_node_it node_it = latest_page_it; node_it != cache_list.end(); node_it++) {
-                
+            for (cache_node_it node_it = latest_page_it; node_it != cache_list.end(); node_it++) { 
                 if (pages_hash_table[node_it->key].size() == 0) {
                     delete_cache(node_it);
 

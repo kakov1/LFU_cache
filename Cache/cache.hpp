@@ -4,12 +4,9 @@
 template <typename PageT, typename KeyT = int>
 class cache_t {
     private:
-
         const size_t cache_size;
         const size_t pages_amount;
-
     public:
-
         struct frequency_node;
         struct cache_node;
 
@@ -30,35 +27,29 @@ class cache_t {
         size_t hits = 0;
         
         std::list<frequency_node> frequency_list;
-
         std::unordered_map<KeyT, cache_node_it> cache_hash_table;
 
         cache_t(const size_t size, const size_t amount) : cache_size(size), pages_amount(amount)  {}
 
         int create_cache_node(PageT page, KeyT key) {
-
             if (frequency_list.size() == 0 or frequency_list.begin()->frequency != 1) {
                 create_frequency_node(1, frequency_list.begin());
             }
 
             cache_node node = {page, key, frequency_list.begin()};
-
             frequency_list.begin()->cache_nodes.push_front(node);
-
             cache_hash_table[key] = frequency_list.begin()->cache_nodes.begin();
 
             return 0;
         }
 
         freq_node_it create_frequency_node(size_t frequency, freq_node_it position) {
-
             frequency_node node = {frequency, {}};
             
             return frequency_list.insert(position, node);;
         }
 
         int add_cache(PageT page, KeyT key) {
-
             create_cache_node(page, key);
 
             cache_node_it node = cache_hash_table[key];
@@ -75,7 +66,6 @@ class cache_t {
         }
         
         int delete_least_used() {
-
             if (frequency_list.size() != 0) {
 
                 if (frequency_list.begin()->cache_nodes.size() != 0) {
@@ -121,7 +111,6 @@ class cache_t {
         }
 
         bool lookup_update(PageT page, KeyT key) {
-
             auto hit = cache_hash_table.find(key);
 
             if (full()) {
@@ -154,7 +143,6 @@ class cache_t {
         }
 
         int print_hash_table() const {
-
             std::cout << "Hash table:\n";
             std::cout << "[";
 
@@ -173,7 +161,6 @@ class cache_t {
         }
 
         int print_frequency_list() const {
-
             std::cout << "Frequency list:\n";
             std::cout << "[";
 
@@ -192,7 +179,6 @@ class cache_t {
             return 0;
         }
         int print_cache_nodes_list(const std::list<cache_node> list) const {
-
             std::cout << "[";
 
             for (auto element = list.begin(); element != list.end(); element++) {
