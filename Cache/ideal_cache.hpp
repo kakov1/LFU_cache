@@ -25,6 +25,7 @@ class ideal_cache_t {
         ideal_cache_t(const size_t size, const size_t amount) : cache_size(size), pages_amount(amount)  {}
 
         int add_cache(PageT page, KeyT key) {
+
             cache_list.push_front({page, key});
 
             if (pages_hash_table[key].size() != 0) {
@@ -76,16 +77,19 @@ class ideal_cache_t {
 
             auto hit = cache_hash_table.find(key);
 
-            if (full()) {
-                if (hit == cache_hash_table.end()) {
-                    delete_latest();    
-                }
-            }
-
             if (hit == cache_hash_table.end()) {
-                add_cache(page, key);
+                if (pages_hash_table[key].size() == 1) {
+                    pages_hash_table[key].pop_front();
+                    return false;
+                }
+                else if (full()) {
+                    delete_latest();
+                }
+                else {
+                    add_cache(page, key);
+                }
                 return false;
-            }  
+            }
 
             pages_hash_table[key].pop_front();
 
@@ -108,6 +112,7 @@ class ideal_cache_t {
         }
 
         int processing_cache() {
+            read_input_pages();
 
             for (KeyT key : pages_list) {
                 lookup_update(key, key);

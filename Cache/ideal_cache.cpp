@@ -12,8 +12,6 @@ int main() {
 
     ideal_cache_t<size_t, size_t> cache(cache_size, pages_amount);
 
-    cache.read_input_pages();
-
     cache.processing_cache();
 
     std::cout << cache.hits << std::endl;

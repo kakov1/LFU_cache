@@ -22,3 +22,10 @@ make
 cd Tests/
 ./start_tests
 ```
+Запуск unit-тестов:
+```
+./cmake -S . -B build
+cd build
+make
+./test_cache
+```
