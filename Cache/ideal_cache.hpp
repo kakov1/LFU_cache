@@ -82,12 +82,10 @@ class ideal_cache_t {
                     pages_hash_table[key].pop_front();
                     return false;
                 }
-                else if (full()) {
+                if (full()) {
                     delete_latest();
                 }
-                else {
-                    add_cache(page, key);
-                }
+                add_cache(page, key);
                 return false;
             }
 
@@ -118,6 +116,24 @@ class ideal_cache_t {
                 lookup_update(key, key);
             }
 
+            return 0;
+        }
+
+        int print_hash_table() const {
+            std::cout << "Hash table:\n";
+            std::cout << "[";
+
+            for (auto element = cache_hash_table.begin();
+                element != cache_hash_table.end(); element++) {
+
+                std::cout << "{" << element->first << ", {"
+                << element->second->key << ", }}";
+
+                if (++cache_hash_table.find(element->first) != cache_hash_table.end()) {
+                    std::cout << ", ";
+                }
+            }
+            std::cout << "]" << '\n';
             return 0;
         }
 
