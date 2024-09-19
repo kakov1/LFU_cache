@@ -119,24 +119,6 @@ class ideal_cache_t {
             return 0;
         }
 
-        int print_hash_table() const {
-            std::cout << "Hash table:\n";
-            std::cout << "[";
-
-            for (auto element = cache_hash_table.begin();
-                element != cache_hash_table.end(); element++) {
-
-                std::cout << "{" << element->first << ", {"
-                << element->second->key << ", }}";
-
-                if (++cache_hash_table.find(element->first) != cache_hash_table.end()) {
-                    std::cout << ", ";
-                }
-            }
-            std::cout << "]" << '\n';
-            return 0;
-        }
-
 };
 
 
