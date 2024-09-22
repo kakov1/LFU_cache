@@ -1,22 +1,26 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <fstream>
-#include <iostream>
-#include <unordered_map>
-#include <list>
-#include <vector>
 #include "../Cache/cache.hpp"
 #include "../Cache/ideal_cache.hpp"
+#include "../Process/read_and_process.hpp"
 
+const int OPEN_ERROR = -1;
 const int LFU = 0;
 const int IDEAL = 1;
 const char* LFU_ANSWERS = "../lfu_answers.txt";
 const char* IDEAL_ANSWERS = "../ideal_answers.txt";
 
+
+
 size_t get_answer(int test_number, const char* filename) {
     std::vector<size_t> answers;
     
     std::fstream test_file(filename);
+
+    if (test_file.fail()) {
+        return OPEN_ERROR;
+    }
 
     size_t buf;
 
@@ -30,6 +34,11 @@ size_t get_answer(int test_number, const char* filename) {
 }
 size_t test(int test_number, int cache_algorithm) {
     std::fstream test_file("../" + std::to_string(test_number) + "test.txt");
+
+    if (test_file.fail()) {
+        return OPEN_ERROR;
+    }
+
     std::cin.rdbuf(test_file.rdbuf()); 
 
     size_t cache_size, pages_amount;
@@ -39,12 +48,12 @@ size_t test(int test_number, int cache_algorithm) {
 
     if (cache_algorithm == LFU) {
         cache_t<size_t, size_t> test_cache(cache_size, pages_amount);
-        test_cache.processing_cache();
+        processing_cache(test_cache, pages_amount);
         return test_cache.hits;
     }
     else {
         ideal_cache_t<size_t, size_t> test_cache(cache_size, pages_amount);
-        test_cache.processing_cache();
+        processing_cache(test_cache, pages_amount);
         return test_cache.hits;
     }
 
@@ -104,3 +113,4 @@ int main(int argc, char* argv[]) {
     ::testing::InitGoogleMock(&argc, argv);
     return RUN_ALL_TESTS();
 }
+    

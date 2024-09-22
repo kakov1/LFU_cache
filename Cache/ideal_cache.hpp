@@ -1,7 +1,13 @@
 #ifndef IDEAL_CACHE_HPP_
 #define IDEAL_CACHE_HPP_
 
-template <typename PageT, typename KeyT = int>
+#include <unordered_map>
+#include <list>
+#include <vector>
+#include <cstddef>
+#include <cassert>
+
+template <typename KeyT, typename PageT>
 class ideal_cache_t {
     private:
         const size_t cache_size;
@@ -24,11 +30,11 @@ class ideal_cache_t {
 
         ideal_cache_t(const size_t size, const size_t amount) : cache_size(size), pages_amount(amount)  {}
 
-        int add_cache(PageT page, KeyT key) {
+        int add_cache(const KeyT& key, const PageT& page) {
 
             cache_list.push_front({page, key});
 
-            if (pages_hash_table[key].size() != 0) {
+            if (!pages_hash_table[key].empty()) {
                 pages_hash_table[key].pop_front();
             }
 
@@ -48,7 +54,7 @@ class ideal_cache_t {
             cache_node_it latest_page_it = cache_list.begin();
 
             for (cache_node_it node_it = latest_page_it; node_it != cache_list.end(); node_it++) { 
-                if (pages_hash_table[node_it->key].size() == 0) {
+                if (pages_hash_table[node_it->key].empty()) {
                     delete_cache(node_it);
 
                     return 0;
@@ -73,7 +79,7 @@ class ideal_cache_t {
             return false;
         } 
 
-        bool lookup_update(PageT page, KeyT key) {
+        bool lookup_update(const KeyT& key, const PageT& page) {
 
             auto hit = cache_hash_table.find(key);
 
@@ -94,29 +100,6 @@ class ideal_cache_t {
             hits++;
 
             return true;
-        }
-
-        int read_input_pages() {
-            KeyT buf;
-
-            for (size_t page_num = 0; page_num < pages_amount; page_num++) {
-                std::cin >> buf;
-
-                pages_hash_table[buf].push_back(page_num);
-                pages_list.push_back(buf);
-            }
-
-            return 0;
-        }
-
-        int processing_cache() {
-            read_input_pages();
-
-            for (KeyT key : pages_list) {
-                lookup_update(key, key);
-            }
-
-            return 0;
         }
 
 };

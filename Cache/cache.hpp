@@ -1,7 +1,13 @@
 #ifndef CACHE_HPP_
 #define CACHE_HPP_
 
-template <typename PageT, typename KeyT = int>
+#include <unordered_map>
+#include <list>
+#include <vector>
+#include <cstddef>
+#include <cassert>
+
+template <typename KeyT, typename PageT>
 class cache_t {
     private:
         const size_t cache_size;
@@ -31,14 +37,15 @@ class cache_t {
 
         cache_t(const size_t size, const size_t amount) : cache_size(size), pages_amount(amount)  {}
 
-        int create_cache_node(PageT page, KeyT key) {
-            if (frequency_list.size() == 0 or frequency_list.begin()->frequency != 1) {
+        int create_cache_node(const KeyT& key, const PageT& page) {
+
+            if (frequency_list.empty() || frequency_list.begin()->frequency != 1) {
                 create_frequency_node(1, frequency_list.begin());
             }
 
             cache_node node = {page, key, frequency_list.begin()};
             frequency_list.begin()->cache_nodes.push_front(node);
-            cache_hash_table[key] = frequency_list.begin()->cache_nodes.begin();
+            cache_hash_table.emplace(key, frequency_list.begin()->cache_nodes.begin());
 
             return 0;
         }
@@ -46,13 +53,15 @@ class cache_t {
         freq_node_it create_frequency_node(size_t frequency, freq_node_it position) {
             frequency_node node = {frequency, {}};
             
-            return frequency_list.insert(position, node);;
+            return frequency_list.insert(position, node);
         }
 
-        int add_cache(PageT page, KeyT key) {
+        int add_cache(const KeyT& key, const PageT& page) {
             create_cache_node(page, key);
 
             cache_node_it node = cache_hash_table[key];
+
+            assert(frequency_list.begin() != frequency_list.end());
 
             size_t frequency_list_head_value = frequency_list.begin()->frequency;
 
@@ -66,10 +75,10 @@ class cache_t {
         }
         
         int delete_least_used() {
-            if (frequency_list.size() != 0) {
+            if (!frequency_list.empty()) {
 
-                if (frequency_list.begin()->cache_nodes.size() != 0) {
-                    int key = frequency_list.begin()->cache_nodes.back().key;
+                if (!frequency_list.begin()->cache_nodes.empty()) {
+                    const KeyT& key = frequency_list.begin()->cache_nodes.back().key;
 
                     frequency_list.begin()->cache_nodes.pop_back();
                     cache_hash_table.erase(key);
@@ -82,10 +91,7 @@ class cache_t {
         }
 
         bool full() const{
-            if (cache_size == cache_hash_table.size()) {
-                return true;
-            }
-            return false;
+            return cache_size == cache_hash_table.size();
         } 
 
         int move_cache_node(cache_node_it hit) {
@@ -99,7 +105,7 @@ class cache_t {
             
             prev_freq_node->cache_nodes.erase(hit);
 
-            if (prev_freq_node->cache_nodes.size() == 0) {
+            if (prev_freq_node->cache_nodes.empty()) {
                 frequency_list.erase(prev_freq_node);
             }
 
@@ -110,7 +116,7 @@ class cache_t {
             return 0;
         }
 
-        bool lookup_update(PageT page, KeyT key) {
+        bool lookup_update(const KeyT& key, const PageT& page) {
             auto hit = cache_hash_table.find(key);
 
             if (full()) {
@@ -129,67 +135,6 @@ class cache_t {
             hits++;
 
             return true;
-        }
-
-        int processing_cache() {
-            PageT buf;
-
-            for (int page_num = 0; page_num < pages_amount; page_num++) {
-                std::cin >> buf;
-                lookup_update(buf, buf);
-            }
-
-            return 0;
-        }
-
-        int print_hash_table() const {
-            std::cout << "Hash table:\n";
-            std::cout << "[";
-
-            for (auto element = cache_hash_table.begin();
-                element != cache_hash_table.end(); element++) {
-
-                std::cout << "{" << element->first << ", {"
-                << element->second->key << ", }}";
-
-                if (++cache_hash_table.find(element->first) != cache_hash_table.end()) {
-                    std::cout << ", ";
-                }
-            }
-            std::cout << "]" << '\n';
-            return 0;
-        }
-
-        int print_frequency_list() const {
-            std::cout << "Frequency list:\n";
-            std::cout << "[";
-
-            for (auto element = frequency_list.begin();
-                 element != frequency_list.end(); element++) {
-
-                std::cout << "{" << element->frequency << ", ";
-                print_cache_nodes_list(element->cache_nodes);
-                std::cout << "}";
-
-                if (element->frequency != (--frequency_list.end())->frequency) {
-                    std::cout << ", ";
-                }
-            }
-            std::cout << "]" << '\n';
-            return 0;
-        }
-        int print_cache_nodes_list(const std::list<cache_node> list) const {
-            std::cout << "[";
-
-            for (auto element = list.begin(); element != list.end(); element++) {
-                std::cout << element->key;
-
-                if (element != --list.end()) {
-                    std::cout << ", ";
-                }
-            }
-            std::cout << "]";
-            return 0;
         }
 };
 

@@ -1,10 +1,6 @@
-#include <iostream>
-#include <unordered_map>
-#include <list>
-#include <vector>
-#include <fstream>
 #include "cache.hpp"
-
+#include "../Process/read_and_process.hpp"
+#include <iostream>
 
 int main() {
     size_t cache_size, pages_amount;
@@ -12,7 +8,7 @@ int main() {
     std::cin >> cache_size >> pages_amount;
 
     cache_t<size_t, size_t> cache(cache_size, pages_amount);
-    cache.processing_cache();
+    processing_cache(cache, pages_amount);
 
     std::cout << cache.hits << std::endl;
 
