@@ -1,9 +1,9 @@
-#include <gmock/gmock.h>
-#include <gtest/gtest.h>
-#include <fstream>
 #include "../Cache/cache.hpp"
 #include "../Cache/ideal_cache.hpp"
 #include "../Process/read_and_process.hpp"
+#include <gmock/gmock.h>
+#include <gtest/gtest.h>
+#include <fstream>
 
 const int OPEN_ERROR = -1;
 const int LFU = 0;
