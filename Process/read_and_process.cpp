@@ -6,7 +6,7 @@ size_t get_page(size_t key) {
 }
 void is_cin_good() {
     if (!std::cin.good()) {
-        throw std::runtime_error("Input error: std::cin doesn't ready for input");
+        throw std::runtime_error("Input error: something went wrong with input");
     }
 }
 
@@ -14,8 +14,8 @@ void read_input_pages(ideal_cache_t<size_t, size_t>& cache, size_t pages_amount)
     size_t buf;
 
     for (size_t page_num = 0; page_num < pages_amount; page_num++) {
-        is_cin_good();
         std::cin >> buf;
+        is_cin_good();
         cache.add_page(buf, page_num);
     }
 }
@@ -34,8 +34,8 @@ void processing_cache(cache_t<size_t, size_t>& cache, size_t pages_amount) {
     size_t buf;
  
     for (size_t page_num = 0; page_num < pages_amount; page_num++) {
-        is_cin_good();
         std::cin >> buf;
+        is_cin_good();
         cache.lookup_update(buf, get_page(buf));
     }
 }

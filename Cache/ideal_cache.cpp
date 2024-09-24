@@ -5,9 +5,9 @@
 int main() {
     size_t cache_size, pages_amount;
 
-    is_cin_good();
-
     std::cin >> cache_size >> pages_amount;
+
+    is_cin_good();
 
     ideal_cache_t<size_t, size_t> cache(cache_size, pages_amount);
 
