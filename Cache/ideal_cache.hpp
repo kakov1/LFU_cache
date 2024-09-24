@@ -12,7 +12,7 @@ class ideal_cache_t {
     private:
         const size_t cache_size;
         const size_t pages_amount;
-    public:
+
         struct cache_node {
             PageT page;
             KeyT key;
@@ -28,9 +28,7 @@ class ideal_cache_t {
         std::list<cache_node> cache_list;
         std::vector<KeyT> pages_list;
 
-        ideal_cache_t(const size_t size, const size_t amount) : cache_size(size), pages_amount(amount)  {}
-
-        int add_cache(const KeyT& key, const PageT& page) {
+        void add_cache(const KeyT& key, const PageT& page) {
 
             cache_list.push_front({page, key});
 
@@ -39,25 +37,21 @@ class ideal_cache_t {
             }
 
             cache_hash_table[key] = cache_list.begin();
-
-            return 0;
         }
 
-        int delete_cache(cache_node_it cache_it) {
+        void delete_cache(cache_node_it cache_it) {
             cache_hash_table.erase(cache_it->key);
             cache_list.erase(cache_it);
-            
-            return 0;
         }
-        
-        int delete_latest() {
+
+        void delete_latest() {
             cache_node_it latest_page_it = cache_list.begin();
 
             for (cache_node_it node_it = latest_page_it; node_it != cache_list.end(); node_it++) { 
                 if (pages_hash_table[node_it->key].empty()) {
                     delete_cache(node_it);
 
-                    return 0;
+                    return;
                 }
                 else {
                     if (pages_hash_table[node_it->key].front() >
@@ -68,15 +62,13 @@ class ideal_cache_t {
             }
 
             delete_cache(latest_page_it);
-            
-            return 0;
         }
 
+    public:
+        ideal_cache_t(const size_t size, const size_t amount) : cache_size(size), pages_amount(amount)  {}
+
         bool full() const{
-            if (cache_size == cache_hash_table.size()) {
-                return true;
-            }
-            return false;
+            return cache_size == cache_hash_table.size();
         } 
 
         bool lookup_update(const KeyT& key, const PageT& page) {
@@ -96,10 +88,22 @@ class ideal_cache_t {
             }
 
             pages_hash_table[key].pop_front();
-
             hits++;
 
             return true;
+        }
+
+        size_t get_hits() {
+            return hits;
+        }
+
+        void add_page(KeyT key, size_t page_num) {
+            pages_hash_table[key].push_back(page_num);
+            pages_list.push_back(key);
+        }
+
+        const KeyT& get_key(size_t page_num) {
+            return pages_list[page_num];
         }
 
 };

@@ -1,6 +1,6 @@
 #include "../Cache/cache.hpp"
 #include "../Cache/ideal_cache.hpp"
-#include "../Process/read_and_process.hpp"
+#include "read_and_process.hpp"
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 #include <fstream>
@@ -45,16 +45,15 @@ size_t test(int test_number, int cache_algorithm) {
 
     std::cin >> cache_size >> pages_amount;
 
-
     if (cache_algorithm == LFU) {
         cache_t<size_t, size_t> test_cache(cache_size, pages_amount);
         processing_cache(test_cache, pages_amount);
-        return test_cache.hits;
+        return test_cache.get_hits();
     }
     else {
         ideal_cache_t<size_t, size_t> test_cache(cache_size, pages_amount);
         processing_cache(test_cache, pages_amount);
-        return test_cache.hits;
+        return test_cache.get_hits();
     }
 
 }
