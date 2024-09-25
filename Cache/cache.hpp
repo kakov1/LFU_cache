@@ -35,8 +35,6 @@ class cache_t {
             frequency_node(size_t frequency_) : frequency(frequency_) {};
         };
 
-        size_t hits = 0;
-        
         std::list<frequency_node> frequency_list;
         std::unordered_map<KeyT, cache_node_it> cache_hash_table;
 
@@ -127,13 +125,7 @@ class cache_t {
 
             move_cache_node(hit->second);
 
-            hits++;
-
             return true;
-        }
-
-        size_t get_hits() {
-            return hits;
         }
 };
 

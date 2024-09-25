@@ -20,22 +20,24 @@ void read_input_pages(ideal_cache_t<size_t, size_t>& cache, size_t pages_amount)
     }
 }
 
-void processing_cache(ideal_cache_t<size_t, size_t>& cache, size_t pages_amount) {
+size_t processing_cache(ideal_cache_t<size_t, size_t>& cache, size_t pages_amount) {
     read_input_pages(cache, pages_amount);
-    size_t key;
+    size_t key, hits = 0;
 
     for (size_t page_num = 0; page_num < pages_amount; page_num++) {
         key = cache.get_key(page_num);
-        cache.lookup_update(key, get_page(key));
+        if (cache.lookup_update(key, get_page(key))) hits++;
     }
+    return hits;
 }
 
-void processing_cache(cache_t<size_t, size_t>& cache, size_t pages_amount) {
-    size_t buf;
+size_t processing_cache(cache_t<size_t, size_t>& cache, size_t pages_amount) {
+    size_t buf, hits = 0;
  
     for (size_t page_num = 0; page_num < pages_amount; page_num++) {
         std::cin >> buf;
         is_cin_good();
-        cache.lookup_update(buf, get_page(buf));
+        if (cache.lookup_update(buf, get_page(buf))) hits++;
     }
+    return hits;
 }

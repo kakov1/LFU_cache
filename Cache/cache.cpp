@@ -10,9 +10,8 @@ int main() {
     is_cin_good();
 
     cache_t<size_t, size_t> cache(cache_size, pages_amount);
-    processing_cache(cache, pages_amount);
 
-    std::cout << cache.get_hits() << std::endl;
+    std::cout << processing_cache(cache, pages_amount) << std::endl;
 
     return 0;
 }

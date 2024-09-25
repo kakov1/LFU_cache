@@ -19,8 +19,6 @@ class ideal_cache_t {
         };
 
         using cache_node_it = typename std::list<cache_node>::iterator;
-        
-        size_t hits = 0;
 
         std::unordered_map<KeyT, cache_node_it> cache_hash_table;
         std::unordered_map<KeyT, std::list<size_t>> pages_hash_table;
@@ -88,13 +86,8 @@ class ideal_cache_t {
             }
 
             pages_hash_table[key].pop_front();
-            hits++;
 
             return true;
-        }
-
-        size_t get_hits() {
-            return hits;
         }
 
         void add_page(KeyT key, size_t page_num) {
